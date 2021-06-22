@@ -1,1 +1,428 @@
+def ryerson_letter_grade(pct):
+  if pct < 50:
+    return 'F'
+  elif pct > 89:
+    return 'A+'
+  elif pct > 84:
+    return 'A'
+  elif pct > 79:
+    return 'A-'
+  tens = pct // 10
+  ones = pct % 10
+  if ones < 3:
+    adjust = "-"
+  elif ones > 6:
+      adjust = "+"      
+  else:
+    adjust = ""
+  return "DCB"[tens - 5] + adjust
+
+def is_ascending(items):
+    for n in range(len(items)-1):
+        if items[n] > items[n+1]:
+            return False
+    return True 
+
+def only_odd_digits(n):
+    if not n:
+        return False
+    while n:
+        if (n % 10) %2 == 0:
+            return False
+        n = n // 10
+    return True
+
+def double_until_all_digits(n, giveup = 1000):
+	i = 0
+	while i < giveup:
+		if len(set(str(n))) == 10:
+			return i
+		n *= 2
+		i += 1
+	return -1    
+
+def frequency_sort(elems):
+	d = {}
+	ordered = sorted(elems)
+	for elem in elems:
+		d.setdefault(elem, 0)
+		d[elem] += 1
+	return sorted(ordered, key=lambda x: d[x], reverse=True)
+
+def fibonacci_sum(n):
+	def fibonacci_list(n, lst=[1,2]):
+		while lst[-1] < n:
+			lst.append(lst[-1] + lst[-2])
+		return lst
+
+	fib_list = fibonacci_list(n)
+
+	counter = len(fib_list) - 1
+	fib_sum = []
+
+	while n != 0:
+		current = fib_list[counter]
+		if n - current >= 0:
+			n -= current
+			fib_sum.append(current)
+
+		counter -= 1
+
+	return fib_sum
+
+def generate_primes(n):
+		primes = [2]
+		for i in range(2, n+1):
+			if is_prime(i):
+				primes.append(i)
+		return primes
+
+def reverse_reversed(items):
+	copy = []
+	for item in reversed(items):
+		if isinstance(item, list):
+			copy.append(reverse_reversed(item))
+		else:
+			copy.append(item)
+	return copy
+
+def flatten(items):
+	copy = []
+	for item in items:
+		if isinstance(item, list):
+			copy += flatten(item)
+		else:
+			copy += [item]
+	return copy  
+
+def is_prime(n):
+		for i in range(2, math.ceil(math.sqrt(n)+1)):
+			if n % i == 0:
+				return False
+		return True
+
+def caps_lock_stuck(text):
+	caps_lock = False
+	return_text = ''
+	
+	for character in text:
+		if character.lower() == 'a':
+			caps_lock = not caps_lock
+		else:
+			if caps_lock:
+				if character.isupper():
+					return_text += character.lower()
+				else:
+					return_text += character.upper()
+			else:
+				return_text += character
+	return return_text
+
+def create_zigzag(rows, cols, start = 1):
+	zigzag = [[start + col + row * cols for col in range(cols)] for row in range(rows)]
+
+	for i in range(len(zigzag)):
+		if i % 2 != 0:
+			zigzag[i] = zigzag[i][::-1]
+
+	return zigzag
+
+def group_equal(items):
+	master_list = []
+	section = []
+
+	if len(items) == 1:
+		return [items]
+
+	for i, item in enumerate(items):
+		if i == 0:
+			section.append(item)
+			continue
+
+		if item == section[0]:
+			section.append(item)
+
+		else:
+			master_list.append(section)
+			section = [item]
+
+		if i == len(items) - 1:
+			master_list.append(section)
+	
+	return master_list
+
+
+def hand_is_badugi(hand):
+	numbers = [card[0] for card in hand]
+	suits = [card[1] for card in hand]
+
+	return len(set(numbers)) == len(set(suits)) == 4
+
+def count_consecutive_summers(n):
+	count = 1
+	for i in range(1, n):
+
+		summ = i
+
+		while summ < n:
+			i += 1
+			summ += i
+			if summ == n:
+				count += 1
+				break
+			if summ > n:
+				break
+	return count
+
+def iterated_remove_pairs(items):
+	while True:
+		changed = False
+		for i in range(len(items) - 1):
+			
+			if items[i] == items[i + 1]:
+				items.pop(i+1)
+				items.pop(i)
+				changed = True
+				break
+
+		if not changed:
+			return items
+
+def give_change(amount, coins):
+
+	current_coin = 0
+	change = []
+
+	while sum(change) != amount:
+		change.append(coins[current_coin])
+		if sum(change) > amount:
+			change.pop(-1)
+			current_coin += 1
+	return change
+
+def is_perfect_power(n):
+	exponent = 2	
+	while True:
+		if 2**exponent > n:
+			return False
+		low = 2
+		high = low
+		while high ** exponent <= n:
+			high *= 2
+		while high - low > 1:
+			middle = (high+low)//2
+			if middle**exponent <= n:
+				low = middle
+			else:
+				high = middle 
+		if low**exponent==n:
+			return True
+		exponent += 1
+
+def all_cyclic_shifts(text):
+	cyclic_shifts = [text]
+	for _ in range(len(text)-1):
+		text = text[1:] + text[0]
+		if text not in cyclic_shifts:
+			cyclic_shifts.append(text)
+	return sorted(cyclic_shifts)
+
+def collapse_intervals(items):
+	output = ''
+	sublists = []
+
+	if len(items) == 0:
+		return ''
+
+	if len(items) == 1:
+		return str(items[0])
+
+	current = [items[0]]
+
+	for i in range(1, len(items)):
+
+		if current[-1] + 1 == items[i]:
+			current.append(items[i])
+
+		else:
+			sublists.append(current)
+			current = [items[i]]
+
+	sublists.append(current)
+
+	for i in range(len(sublists)):
+
+		if len(sublists[i]) == 1:
+			output += str(sublists[i][0])
+
+		else:
+			output += str(sublists[i][0]) + '-' + str(sublists[i][-1])
+
+		if i != len(sublists) - 1:
+			output += ','
+
+	return output
+
+def postfix_evaluate(items):
+	i = 0
+	while True:
+		if items[i] in ('*', '+', '-', '/'):
+
+			operator = items.pop(i)
+			num2 = items.pop(i - 1)
+			num1 = items.pop(i - 2)
+
+			if operator == '+':
+				answer = num1 + num2
+			elif operator == '-':
+				answer = num1 - num2
+			elif operator == '*':
+				answer = num1 * num2
+			else:
+				if num2 == 0:
+					answer = 0
+				else:
+					answer = num1 // num2
+			
+			items.insert(i-2, answer)
+			i = -1
+
+			if len(items) == 1:
+				return items[0]
+
+		i += 1
+
+def count_distinct_sums_and_products(items):
+    sums = set()
+    for n1 in items:
+        for n2 in items:
+            sums.add(n1 + n2)
+            sums.add(n1 * n2)
+    return len(sums)
+
+def josephus(n, k):
+	soldiers = list(range(1, n+1))
+	order = []
+	s = k - 1
+	while True:
+		if len(soldiers) == 1:
+			return order + soldiers
+
+		dead = soldiers.pop(s)
+		order.append(dead)
+		soldiers = list(filter(lambda x: x != dead, soldiers))
+
+		while len(soldiers) < s:
+			soldiers *= 2
+
+		if (s + k) % len(soldiers) == 0:
+			s = len(soldiers) - 1
+		else:
+			s = ((s + k) % len(soldiers)) - 1
+
+def detab(text, n=8, sub=' '):
+    while True:
+        tab_index = text.find('\t')
+
+        if tab_index == -1:
+            break
+
+        text = text.replace('\t', (n - n % tab_index) * sub, 1)
+
+    return text
+
+def brangelina(first, second):
+    v_groups = []
+    in_group = False
+    
+    # create indexes to the vowel groups
+    if first[0] in 'aeiou':
+        v_groups.append(0)
+        in_group = True
+        
+    for i in range(1, len(first), 1):
+        if first[i] in 'aeiou' and not in_group:
+            v_groups.append(i)
+            in_group = True
+        else:
+            in_group = False
+    
+    # find the index of the first consonant in the second name
+    for i in range(len(second)):
+        if second[i] in 'aeiou':
+            break
+    
+    # now combine the 2 names
+    if len(v_groups) == 1:
+        return first[:v_groups[0]] + second[i:]
+    else:
+        return first[:v_groups[-2]] + second[i:]
+
+def is_permutation(items,n):
+  s=sorted(set(items))
+  p=[i for i in range(1,n+1)]
+  if s==p:
+    return True
+  else:
+    return False
+
+def running_median_of_three(items):
+  import statistics
+  med = []
+  firsttwo = items[0:2]
+  if len(items) <= 2:
+    return items
+  if len(items) > 2:
+    for i in range(len(items)):
+      med.append(statistics.median(items[i:i+3]))
+      x = firsttwo + med            
+  return x[:-2]
+
+def bridge_hand_shape(hand):
+  cards = [b for a, b in hand]
+  return [cards.count(suit) for suit in ['spades', 'hearts', 'diamonds', 'clubs']]
+
+
+def expand_intervals(intervals):
+  rs = (x.split("-") for x in intervals.split(","))
+  return [i for r in rs for i in range(int(r[0]), int(r[-1]) + 1)]
+
+def recaman(n):
+	recaman_series = [1]
+	recaman_set = set(recaman_series)
+
+	for i in range(2, n + 1):
+
+		subtracted = recaman_series[-1] - i
+		added = recaman_series[-1] + i
+
+		if subtracted > 0 and subtracted not in recaman_set:
+			recaman_series.append(subtracted)
+			recaman_set.add(subtracted)
+		
+		else:
+			recaman_series.append(added)
+			recaman_set.add(added)
+
+	return recaman_series
+
+def count_carries(a,b):
+   func = lambda n:sum(map(int,str(n)));
+   return int((func(a) + func(b) -func(a+b)) / 9)
+ 
+def first_missing_positive(items):
+  r = set([x for x in range(1, len(items) + 1)])
+  return min(r -set(items))
+
+def first_preceded_by_smaller(items, k):
+    done = items[:k]
+    for i, item in enumerate(items[k:]):
+        smaller = sum(1 for n in done if n < item)
+        if smaller >= k:
+            return item
+        else:
+            done.append(item)
+    return None
+
+  
 
